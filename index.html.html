@@ -1,0 +1,2683 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>اختبار المحاضرة الثانية: أنواع العينات والتوزيع التكراري | جامعة البصرة للنفط والغاز</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        /* ==========================================================================
+           1. الهوية البصرية المشرقة والنظيفة (Clean Academic Palette)
+           ========================================================================== */
+        :root {
+            --bg-gradient: linear-gradient(135deg, #f0f5ff 0%, #dbeafe 100%);
+            --card-bg: #ffffff;
+            --surface-soft: #f8fafc;
+            --surface-blue: #eff6ff;
+            --border-light: #e2e8f0;
+            --border-blue: #bfdbfe;
+
+            --royal-blue: #1e40af;
+            --royal-dark: #1e3a8a;
+            --indigo-vibrant: #2563eb;
+            --indigo-glow: rgba(37, 99, 235, 0.22);
+
+            --gold-warm: #d97706;
+            --gold-bright: #f59e0b;
+            --gold-bg: #fffbeb;
+            --gold-border: #fde68a;
+
+            --emerald: #059669;
+            --emerald-bg: #ecfdf5;
+            --emerald-border: #10b981;
+
+            --rose: #e11d48;
+            --rose-bg: #fff1f2;
+            --rose-border: #f43f5e;
+
+            --text-main: #0f172a;
+            --text-body: #334155;
+            --text-muted: #64748b;
+
+            --radius-xl: 24px;
+            --radius-lg: 16px;
+            --radius-md: 12px;
+            --shadow-card: 0 20px 45px -12px rgba(30, 64, 175, 0.14), 0 8px 18px -6px rgba(15, 23, 42, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        .en {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            overflow-x: hidden;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        /* ==========================================================================
+           2. التخطيط العام: عمود الاختبار الرئيسي + الآلة الحاسبة الجانبية الثابتة
+           ========================================================================== */
+        .workspace-layout {
+            width: 100%;
+            max-width: 1140px;
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .app-shell {
+            flex: 1;
+            min-width: 0;
+            max-width: 780px;
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-card);
+            border: 1px solid #ffffff;
+            overflow: hidden;
+            animation: cardPop 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* بطاقة الآلة الحاسبة العلمية الجانبية */
+        .calc-sidebar {
+            width: 310px;
+            flex-shrink: 0;
+            background: var(--card-bg);
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-card);
+            border: 1px solid var(--border-blue);
+            overflow: hidden;
+            position: sticky;
+            top: 20px;
+            animation: cardPop 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .calc-sidebar-header {
+            background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal-blue) 100%);
+            color: #ffffff;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--gold-bright);
+        }
+
+        .calc-sidebar-header h3 {
+            font-size: 0.98rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .calc-close-mobile {
+            display: none;
+            background: rgba(255, 255, 255, 0.18);
+            border: none;
+            color: #ffffff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            font-size: 1rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .calc-body {
+            padding: 16px;
+            direction: ltr;
+        }
+
+        .calc-history {
+            min-height: 20px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-align: right;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .calc-display {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 2px solid var(--border-blue);
+            background: var(--surface-soft);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.35rem;
+            font-weight: 800;
+            text-align: right;
+            color: var(--text-main);
+            margin-bottom: 12px;
+            outline: none;
+        }
+
+        .calc-keys-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 7px;
+        }
+
+        .c-key {
+            padding: 11px 6px;
+            border-radius: 10px;
+            border: 1px solid var(--border-light);
+            background: var(--surface-soft);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-main);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .c-key:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .c-key:active {
+            transform: translateY(0);
+        }
+
+        .c-key.sci {
+            background: var(--gold-bg);
+            border-color: var(--gold-border);
+            color: #92400e;
+            font-size: 0.88rem;
+        }
+
+        .c-key.sci:hover {
+            background: #fef3c7;
+        }
+
+        .c-key.op {
+            background: var(--surface-blue);
+            border-color: var(--border-blue);
+            color: var(--royal-blue);
+        }
+
+        .c-key.op:hover {
+            background: #dbeafe;
+        }
+
+        .c-key.clr {
+            background: var(--rose-bg);
+            border-color: #fecdd3;
+            color: var(--rose);
+        }
+
+        .c-key.eq {
+            background: linear-gradient(135deg, var(--royal-blue) 0%, var(--indigo-vibrant) 100%);
+            border-color: var(--royal-blue);
+            color: #ffffff;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.28);
+        }
+
+        .calc-hint {
+            direction: rtl;
+            text-align: right;
+            margin-top: 12px;
+            background: var(--surface-soft);
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* زر فتح الآلة الحاسبة العائم على الهواتف */
+        .fab-calc-btn {
+            display: none;
+            position: fixed;
+            bottom: 18px;
+            left: 18px;
+            z-index: 900;
+            background: linear-gradient(135deg, var(--royal-dark) 0%, var(--indigo-vibrant) 100%);
+            color: #ffffff;
+            border: 2px solid var(--gold-bright);
+            border-radius: 50px;
+            padding: 12px 18px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            box-shadow: 0 10px 25px rgba(15, 23, 42, 0.3);
+            cursor: pointer;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* ==========================================================================
+           3. الترويسة الأكاديمية
+           ========================================================================== */
+        .academic-banner {
+            background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal-blue) 60%, var(--indigo-vibrant) 100%);
+            color: #ffffff;
+            padding: 22px 24px;
+            text-align: center;
+            border-bottom: 4px solid var(--gold-bright);
+            position: relative;
+        }
+
+        .sound-toggle {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .sound-toggle:hover {
+            background: rgba(255, 255, 255, 0.26);
+            transform: scale(1.06);
+        }
+
+        .uni-chain {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.14);
+            border: 1px solid rgba(253, 230, 138, 0.45);
+            color: #fef3c7;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .main-course-title {
+            font-size: 1.48rem;
+            font-weight: 900;
+            margin-bottom: 3px;
+            line-height: 1.4;
+        }
+
+        .sub-course-en {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.94rem;
+            font-weight: 700;
+            color: #dbeafe;
+            margin-bottom: 10px;
+        }
+
+        .instructor-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(15, 23, 42, 0.36);
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.16);
+        }
+
+        /* ==========================================================================
+           4. الشاشات (البداية، الاختبار، النتيجة)
+           ========================================================================== */
+        .screen {
+            padding: 26px 24px;
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+            animation: slideUp 0.35s ease-out;
+        }
+
+        /* بطاقات مراحل الاختبار الثلاث في شاشة البداية */
+        .stages-overview {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 22px;
+        }
+
+        .stage-card {
+            background: var(--surface-blue);
+            border: 1.5px solid var(--border-blue);
+            border-radius: 14px;
+            padding: 12px 10px;
+            text-align: center;
+        }
+
+        .stage-card.open-time {
+            background: var(--gold-bg);
+            border-color: var(--gold-border);
+        }
+
+        .stage-card .st-num {
+            display: inline-block;
+            font-size: 0.76rem;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 50px;
+            background: #ffffff;
+            color: var(--royal-blue);
+            margin-bottom: 5px;
+        }
+
+        .stage-card.open-time .st-num {
+            color: #92400e;
+        }
+
+        .stage-card .st-title {
+            display: block;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .stage-card .st-sub {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .form-card {
+            max-width: 480px;
+            margin: 0 auto;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-light);
+            border-radius: 20px;
+            padding: 22px;
+        }
+
+        .field-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+
+        .field-group label {
+            display: block;
+            font-size: 0.94rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin-bottom: 8px;
+        }
+
+        .field-group input[type="text"] {
+            width: 100%;
+            padding: 13px 16px;
+            border-radius: var(--radius-md);
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .field-group input[type="text"]:focus {
+            border-color: var(--indigo-vibrant);
+            box-shadow: 0 0 0 4px var(--indigo-glow);
+        }
+
+        .section-pills-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .sec-btn {
+            padding: 13px 10px;
+            border-radius: var(--radius-md);
+            border: 2px solid #cbd5e1;
+            background: #ffffff;
+            color: var(--text-body);
+            font-size: 0.96rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sec-btn:hover {
+            border-color: var(--indigo-vibrant);
+            background: var(--surface-blue);
+        }
+
+        .sec-btn.selected {
+            background: var(--indigo-vibrant);
+            border-color: var(--indigo-vibrant);
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+        }
+
+        .error-text {
+            color: var(--rose);
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-top: 8px;
+            display: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 14px 26px;
+            border-radius: 14px;
+            border: none;
+            font-size: 1.05rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.22s ease;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb 0%, #1e3a8a 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.42);
+            font-size: 1.08rem;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px -4px rgba(37, 99, 235, 0.5);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff;
+            box-shadow: 0 6px 16px -3px rgba(217, 119, 6, 0.35);
+        }
+
+        .btn-gold:hover {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: #ffffff;
+            color: var(--royal-blue);
+            border: 2px solid #cbd5e1;
+        }
+
+        .btn-outline:hover {
+            background: var(--surface-soft);
+            border-color: var(--royal-blue);
+        }
+
+        .calc-tip-banner {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 1.5px solid #f59e0b;
+            border-right: 5px solid #d97706;
+            border-radius: 14px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: right;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #78350f;
+            line-height: 1.6;
+        }
+
+        .calc-tip-banner .tip-icon {
+            font-size: 1.6rem;
+            flex-shrink: 0;
+        }
+
+        .quiz-top-hud {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            background: var(--surface-soft);
+            border: 1px solid var(--border-light);
+            padding: 10px 14px;
+            border-radius: 16px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        .student-tag {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            background: #ffffff;
+            padding: 6px 12px;
+            border-radius: 50px;
+            border: 1px solid var(--border-light);
+        }
+
+        .hud-stats {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .hud-pill {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .hud-pill strong {
+            color: var(--indigo-vibrant);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .streak-pill {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            padding: 6px 12px;
+            border-radius: 50px;
+            font-size: 0.86rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            transition: all 0.25s;
+        }
+
+        .streak-pill.hot {
+            background: var(--gold-bg);
+            border-color: var(--gold-bright);
+            color: #b45309;
+            transform: scale(1.05);
+        }
+
+        .float-score {
+            position: absolute;
+            top: -26px;
+            left: 10px;
+            background: var(--emerald);
+            color: #ffffff;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.82rem;
+            font-weight: 800;
+            padding: 2px 9px;
+            border-radius: 50px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .float-score.pop {
+            animation: floatPop 1s ease-out forwards;
+        }
+
+        .svg-timer {
+            position: relative;
+            width: 52px;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .svg-timer svg {
+            width: 52px;
+            height: 52px;
+            transform: rotate(-90deg);
+        }
+
+        .ring-track {
+            fill: #ffffff;
+            stroke: #e2e8f0;
+            stroke-width: 4.5;
+        }
+
+        .ring-fill {
+            fill: none;
+            stroke: var(--royal-blue);
+            stroke-width: 4.5;
+            stroke-linecap: round;
+            stroke-dasharray: 125.6;
+            stroke-dashoffset: 0;
+            transition: stroke-dashoffset 0.9s linear, stroke 0.3s;
+        }
+
+        .ring-fill.warn { stroke: var(--gold-bright); }
+        .ring-fill.danger { stroke: var(--rose); }
+        .ring-fill.unlimited { stroke: var(--emerald); stroke-dashoffset: 0 !important; }
+
+        .timer-num {
+            position: absolute;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+        }
+
+        .timer-num.unlimited {
+            font-size: 1.25rem;
+            color: var(--emerald);
+        }
+
+        .timer-num.danger {
+            color: var(--rose);
+            animation: pulse 0.7s infinite;
+        }
+
+        /* شريط التقدم الـ 15 */
+        .progress-track {
+            display: grid;
+            grid-template-columns: repeat(15, 1fr);
+            gap: 5px;
+            margin-bottom: 14px;
+        }
+
+        .p-seg {
+            height: 7px;
+            border-radius: 50px;
+            background: #e2e8f0;
+            transition: all 0.25s ease;
+        }
+
+        .p-seg.active {
+            background: var(--indigo-vibrant);
+            box-shadow: 0 0 0 3px var(--indigo-glow);
+        }
+
+        .p-seg.ok { background: var(--emerald); }
+        .p-seg.bad { background: var(--rose); }
+
+        /* شريط القسم الحالي */
+        .section-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .part-badge {
+            background: var(--surface-blue);
+            color: var(--royal-blue);
+            border: 1px solid var(--border-blue);
+            padding: 5px 14px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 800;
+        }
+
+        .part-badge.solve-mode {
+            background: var(--emerald-bg);
+            color: #065f46;
+            border-color: var(--emerald-border);
+        }
+
+        .part-badge.tf-mode {
+            background: var(--gold-bg);
+            color: #92400e;
+            border-color: var(--gold-border);
+        }
+
+        .q-counter-label {
+            font-size: 0.88rem;
+            font-weight: 800;
+            color: var(--text-muted);
+        }
+
+        /* بطاقة السؤال */
+        .question-box {
+            background: #ffffff;
+            border: 2px solid var(--border-light);
+            border-radius: 18px;
+            padding: 18px 20px;
+            margin-bottom: 16px;
+        }
+
+        .q-en-text {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.12rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.55;
+            margin-bottom: 12px;
+        }
+
+        .q-ar-text {
+            direction: rtl;
+            text-align: right;
+            background: var(--surface-soft);
+            border-right: 4px solid var(--royal-blue);
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-body);
+            line-height: 1.65;
+        }
+
+        /* منطقة الإجابة: 1) اختيار من متعدد */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .options-grid.tf-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .choice-btn {
+            width: 100%;
+            direction: ltr;
+            text-align: left;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #ffffff;
+            border: 2px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 13px 16px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-main);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.18s ease;
+        }
+
+        .choice-btn:hover:not(:disabled) {
+            border-color: var(--indigo-vibrant);
+            background: var(--surface-blue);
+            transform: translateX(4px);
+        }
+
+        .choice-key {
+            width: 32px;
+            height: 32px;
+            min-width: 32px;
+            border-radius: 8px;
+            background: #f1f5f9;
+            color: var(--royal-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.92rem;
+            transition: all 0.18s;
+        }
+
+        .choice-btn:hover:not(:disabled) .choice-key {
+            background: var(--indigo-vibrant);
+            color: #ffffff;
+        }
+
+        .choice-btn.tf-btn {
+            justify-content: center;
+            padding: 18px 16px;
+            font-size: 1.22rem;
+            font-weight: 800;
+            border-width: 2.5px;
+        }
+
+        .choice-btn.tf-true:hover:not(:disabled) {
+            border-color: var(--emerald);
+            background: var(--emerald-bg);
+            color: var(--emerald);
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.tf-false:hover:not(:disabled) {
+            border-color: var(--rose);
+            background: var(--rose-bg);
+            color: var(--rose);
+            transform: translateY(-2px);
+        }
+
+        .choice-btn.correct {
+            background: var(--emerald-bg);
+            border-color: var(--emerald);
+            color: #065f46;
+        }
+
+        .choice-btn.correct .choice-key {
+            background: var(--emerald);
+            color: #ffffff;
+        }
+
+        .choice-btn.wrong {
+            background: var(--rose-bg);
+            border-color: var(--rose);
+            color: #9f1239;
+        }
+
+        .choice-btn.wrong .choice-key {
+            background: var(--rose);
+            color: #ffffff;
+        }
+
+        .choice-btn:disabled {
+            cursor: default;
+        }
+
+        /* منطقة الإجابة: 2) مساحة الحل الكتابي/الرقمي (بدون وقت) */
+        .solve-workspace {
+            background: var(--surface-soft);
+            border: 2px solid var(--border-blue);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .solve-workspace-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .solve-workspace-header label {
+            font-size: 0.9rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+        }
+
+        .open-time-badge {
+            background: var(--emerald-bg);
+            color: #065f46;
+            border: 1px solid var(--emerald-border);
+            padding: 3px 10px;
+            border-radius: 50px;
+            font-size: 0.78rem;
+            font-weight: 800;
+        }
+
+        .solve-scratch-area {
+            width: 100%;
+            height: 92px;
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            background: #ffffff;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--text-main);
+            resize: vertical;
+            outline: none;
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .solve-scratch-area:focus {
+            border-color: var(--indigo-vibrant);
+        }
+
+        .final-answer-row {
+            display: flex;
+            align-items: stretch;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .final-num-input {
+            flex: 1;
+            min-width: 180px;
+            direction: ltr;
+            text-align: center;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 2px solid var(--royal-blue);
+            background: #ffffff;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-main);
+            outline: none;
+        }
+
+        .final-num-input:focus {
+            box-shadow: 0 0 0 4px var(--indigo-glow);
+        }
+
+        .final-num-input:disabled {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .solve-unit-hint {
+            width: 100%;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* صندوق الشرح التوضيحي لخطوات الحل */
+        .solution-box {
+            display: none;
+            border-radius: 16px;
+            padding: 16px 18px;
+            margin-bottom: 16px;
+            border: 1.5px solid;
+            border-right-width: 5px;
+            animation: slideUp 0.3s ease;
+        }
+
+        .solution-box.ok {
+            background: #f0fdf4;
+            border-color: var(--emerald-border);
+            color: #064e3b;
+        }
+
+        .solution-box.bad {
+            background: #fff1f2;
+            border-color: var(--rose-border);
+            color: #881337;
+        }
+
+        .sol-status {
+            font-size: 1.02rem;
+            font-weight: 900;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sol-steps-card {
+            background: #ffffff;
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 12px;
+            padding: 12px 14px;
+            color: var(--text-main);
+        }
+
+        .sol-steps-header {
+            font-size: 0.86rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .sol-formula {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--surface-blue);
+            color: var(--royal-dark);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            border-left: 3px solid var(--royal-blue);
+            overflow-x: auto;
+        }
+
+        .sol-ar-desc {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--text-body);
+            line-height: 1.7;
+        }
+
+        .next-row {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        /* ==========================================================================
+           6. شاشة النتيجة النهائية: شهادة الإنجاز الأكاديمية المميزة
+           ========================================================================== */
+        .certificate-card {
+            text-align: center;
+            background: linear-gradient(180deg, #ffffff 0%, #f0f6ff 100%);
+            border: 2.5px solid var(--gold-bright);
+            border-radius: 22px;
+            padding: 28px 22px;
+            margin-bottom: 20px;
+            position: relative;
+            box-shadow: 0 15px 35px -10px rgba(217, 119, 6, 0.18);
+        }
+
+        .cert-ribbon {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--royal-dark) 0%, var(--royal-blue) 100%);
+            color: #fef3c7;
+            border: 1.5px solid var(--gold-bright);
+            padding: 5px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .cert-title {
+            font-size: 1.4rem;
+            font-weight: 900;
+            color: var(--royal-dark);
+            margin-bottom: 6px;
+        }
+
+        .cert-uni-sub {
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+        }
+
+        .sc-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: #ffffff;
+            border: 1.5px solid var(--border-blue);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin-bottom: 14px;
+            box-shadow: 0 4px 10px rgba(30, 64, 175, 0.06);
+        }
+
+        .score-circle {
+            width: 118px;
+            height: 118px;
+            margin: 0 auto 12px auto;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 6px solid var(--royal-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.16);
+        }
+
+        .score-circle .big-pct {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            line-height: 1.1;
+        }
+
+        .score-circle .sub-lbl {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .grade-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold-warm) 100%);
+            color: #ffffff;
+            padding: 7px 22px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .sc-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 480px;
+            margin: 0 auto 14px auto;
+        }
+
+        .sc-stat {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 11px 8px;
+        }
+
+        .sc-stat .v {
+            display: block;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.22rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+        }
+
+        .sc-stat .l {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            max-width: 520px;
+            margin: 0 auto 18px auto;
+        }
+
+        .bd-item {
+            background: var(--surface-blue);
+            border: 1px solid var(--border-blue);
+            border-radius: 12px;
+            padding: 10px 8px;
+        }
+
+        .bd-item.solve-bd {
+            background: var(--emerald-bg);
+            border-color: var(--emerald-border);
+        }
+
+        .bd-item.tf-bd {
+            background: var(--gold-bg);
+            border-color: var(--gold-border);
+        }
+
+        .bd-item .bd-val {
+            display: block;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .bd-item .bd-lbl {
+            font-size: 0.76rem;
+            font-weight: 800;
+            color: var(--text-body);
+        }
+
+        .cert-signature-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1.5px dashed var(--border-blue);
+            padding-top: 14px;
+            margin-top: 6px;
+            margin-bottom: 18px;
+            font-size: 0.86rem;
+            font-weight: 800;
+            color: var(--royal-dark);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .cert-seal {
+            background: var(--gold-bg);
+            border: 1.5px solid var(--gold-bright);
+            color: #92400e;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+        }
+
+        .sc-meta {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            justify-content: center;
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            padding: 7px 16px;
+            border-radius: 50px;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            margin-bottom: 8px;
+        }
+
+        .sc-teacher {
+            font-size: 0.88rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 16px;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 14px auto;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 6px solid var(--royal-blue);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(30, 64, 175, 0.16);
+        }
+
+        .score-circle .big-pct {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            line-height: 1.1;
+        }
+
+        .score-circle .sub-lbl {
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .grade-tag {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--gold-bright) 0%, var(--gold-warm) 100%);
+            color: #ffffff;
+            padding: 7px 22px;
+            border-radius: 50px;
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-bottom: 18px;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        .sc-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 460px;
+            margin: 0 auto 20px auto;
+        }
+
+        .sc-stat {
+            background: #ffffff;
+            border: 1px solid var(--border-light);
+            border-radius: 12px;
+            padding: 12px 8px;
+        }
+
+        .sc-stat .v {
+            display: block;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+        }
+
+        .sc-stat .l {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+
+        .sc-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .copy-msg {
+            display: none;
+            margin-top: 12px;
+            background: var(--emerald-bg);
+            color: #065f46;
+            border: 1px solid var(--emerald-border);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 800;
+        }
+
+        .review-accordion {
+            border: 1px solid var(--border-light);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .review-toggle-bar {
+            width: 100%;
+            background: var(--surface-soft);
+            border: none;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.96rem;
+            font-weight: 800;
+            color: var(--royal-blue);
+            cursor: pointer;
+        }
+
+        .review-list {
+            display: none;
+            padding: 14px;
+            max-height: 420px;
+            overflow-y: auto;
+            flex-direction: column;
+            gap: 12px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .rev-row {
+            padding: 12px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border-light);
+            border-right-width: 4px;
+            font-size: 0.88rem;
+        }
+
+        .rev-row.ok { border-right-color: var(--emerald); background: #f0fdf4; }
+        .rev-row.bad { border-right-color: var(--rose); background: #fff1f2; }
+
+        .rev-q {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .rev-a {
+            direction: ltr;
+            text-align: left;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.84rem;
+            margin-bottom: 4px;
+        }
+
+        .rev-sol {
+            background: #ffffff;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 0.84rem;
+            font-weight: 700;
+            color: var(--text-body);
+            margin-top: 6px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        @keyframes cardPop {
+            from { opacity: 0; transform: translateY(16px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatPop {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-24px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ==========================================================================
+           7. التجاوب مع الشاشات المتوسطة والصغيرة (الهواتف والأجهزة اللوحية)
+           ========================================================================== */
+        @media (max-width: 960px) {
+            .workspace-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            .app-shell {
+                width: 100%;
+                max-width: 780px;
+            }
+            .calc-sidebar {
+                display: none;
+                position: fixed;
+                bottom: 76px;
+                left: 16px;
+                right: 16px;
+                top: auto;
+                width: auto;
+                max-width: 360px;
+                margin: 0 auto;
+                z-index: 950;
+                box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.45);
+            }
+            .calc-sidebar.mobile-open {
+                display: block;
+            }
+            .calc-close-mobile {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .fab-calc-btn {
+                display: inline-flex;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .main-course-title { font-size: 1.22rem; }
+            .screen { padding: 20px 16px; }
+            .stages-overview { grid-template-columns: 1fr; }
+            .section-pills-grid { grid-template-columns: 1fr; }
+            .options-grid.tf-grid { grid-template-columns: 1fr; }
+            .sc-stats-grid, .breakdown-grid { grid-template-columns: 1fr; }
+            .sc-actions .btn { width: 100%; }
+            .q-en-text { font-size: 1.02rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- زر فتح الآلة الحاسبة العائم على الهواتف -->
+    <button id="fab-calc-btn" class="fab-calc-btn" type="button">
+        <span>🧮</span>
+        <span>الآلة الحاسبة</span>
+    </button>
+
+    <div class="workspace-layout">
+        <!-- ======================================================================
+             العمود الرئيسي: بطاقة الاختبار التفاعلي
+             ====================================================================== -->
+        <div class="app-shell">
+            <header class="academic-banner">
+                <button id="sound-btn" class="sound-toggle" title="تفعيل/كتم الصوت" aria-label="Toggle Sound">🔊</button>
+                <div class="uni-chain">جامعة البصرة للنفط والغاز • كلية الإدارة الصناعية للنفط والغاز • قسم المحاسبة النفطية</div>
+                <h1 class="main-course-title">المحاضرة الثانية: أنواع العينات والتوزيع التكراري</h1>
+                <div class="sub-course-en">Lecture 2: Types of Samples & Frequency Distributions</div>
+                <div class="instructor-badge">👨‍🏫 أستاذ المادة: م.م إسماعيل محمد الهلالي</div>
+            </header>
+
+            <!-- 1. شاشة البداية -->
+            <section id="start-screen" class="screen active">
+                <div class="stages-overview">
+                    <div class="stage-card">
+                        <span class="st-num">القسم الأول (1–7)</span>
+                        <span class="st-title">اختيار من متعدد</span>
+                        <span class="st-sub">⏱️ 35 ثانية لكل سؤال</span>
+                    </div>
+                    <div class="stage-card open-time">
+                        <span class="st-num">القسم الثاني (8–10)</span>
+                        <span class="st-title">مسائل حل حسابية</span>
+                        <span class="st-sub">♾️ بدون وقت (وقت مفتوح)</span>
+                    </div>
+                    <div class="stage-card">
+                        <span class="st-num">القسم الثالث (11–15)</span>
+                        <span class="st-title">صح أو خطأ</span>
+                        <span class="st-sub">⏱️ 25 ثانية لكل سؤال</span>
+                    </div>
+                </div>
+
+                <div class="calc-tip-banner">
+                    <span class="tip-icon">🧮</span>
+                    <div>
+                        <strong>تنبيه قبل البدء:</strong> تم إرفاق <strong>الآلة الحاسبة العلمية</strong> بجانب نموذج الاختبار (وتظهر عبر زر <em>«الآلة الحاسبة»</em> في الهواتف)، وتحتوي على دوال <span class="en"><strong>n!</strong></span> و <span class="en"><strong>√</strong></span> و <span class="en"><strong>log</strong></span> لمساعدتك في حل المسائل الحسابية بدقة.
+                    </div>
+                </div>
+
+                <div class="form-card">
+                    <div class="field-group">
+                        <label for="student-name">اسم الطالب الثلاثي:</label>
+                        <input type="text" id="student-name" placeholder="اكتب اسمك الثلاثي هنا..." autocomplete="off">
+                    </div>
+
+                    <div class="field-group">
+                        <label>اختر نوع الدراسة:</label>
+                        <div class="section-pills-grid" id="study-grid">
+                            <button type="button" class="sec-btn study-btn" data-study="صباحي">صباحي</button>
+                            <button type="button" class="sec-btn study-btn" data-study="مسائي">مسائي</button>
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label>اختر الشعبة:</label>
+                        <div class="section-pills-grid" id="section-grid">
+                            <button type="button" class="sec-btn section-btn" data-sec="شعبة أ">شعبة أ</button>
+                            <button type="button" class="sec-btn section-btn" data-sec="شعبة ب">شعبة ب</button>
+                        </div>
+                        <div id="form-error" class="error-text">⚠️ يرجى كتابة اسم الطالب الثلاثي واختيار نوع الدراسة (صباحي / مسائي) والشعبة (أ / ب) أولاً.</div>
+                    </div>
+
+                    <button id="start-btn" class="btn btn-primary">ابدأ الاختبار الآن 🚀</button>
+                </div>
+            </section>
+
+            <!-- 2. شاشة الأسئلة التفاعلية -->
+            <section id="quiz-screen" class="screen">
+                <div class="quiz-top-hud">
+                    <div id="hud-student-info" class="student-tag">الطالب: ...</div>
+
+                    <div class="hud-stats">
+                        <div class="hud-pill">النقاط: <strong id="hud-score">0</strong></div>
+                        <div id="hud-streak" class="streak-pill">🔥 0</div>
+                        <div id="float-score" class="float-score">+100</div>
+                    </div>
+
+                    <div class="svg-timer" title="الوقت المتبقي">
+                        <svg viewBox="0 0 50 50">
+                            <circle class="ring-track" cx="25" cy="25" r="20"></circle>
+                            <circle id="ring-fill" class="ring-fill" cx="25" cy="25" r="20"></circle>
+                        </svg>
+                        <span id="timer-num" class="timer-num">35</span>
+                    </div>
+                </div>
+
+                <div id="progress-track" class="progress-track"></div>
+
+                <div class="section-bar">
+                    <span id="part-badge" class="part-badge en">Part 1: Multiple Choice (Timed)</span>
+                    <span id="q-counter" class="q-counter-label">السؤال 1 من 15</span>
+                </div>
+
+                <div class="question-box">
+                    <div id="q-en" class="q-en-text">Question in English...</div>
+                    <div id="q-ar" class="q-ar-text">ترجمة السؤال بالعربي...</div>
+                </div>
+
+                <!-- حاوية الاختيار من متعدد والصح والخطأ -->
+                <div id="options-grid" class="options-grid"></div>
+
+                <!-- حاوية مسائل الحل بدون وقت (القسم الثاني) -->
+                <div id="solve-workspace" class="solve-workspace" style="display: none;">
+                    <div class="solve-workspace-header">
+                        <label for="solve-scratch">✏️ مساحة مسودة الحل (اكتب خطواتك هنا واستعن بالآلة الحاسبة المرفقة):</label>
+                        <span class="open-time-badge">♾️ وقت مفتوح للحل</span>
+                    </div>
+                    <textarea id="solve-scratch" class="solve-scratch-area" placeholder="اكتب خطوات حلك هنا لتنظيم العملية الحسابية..."></textarea>
+
+                    <div class="final-answer-row">
+                        <input type="text" id="final-num-input" class="final-num-input" placeholder="أدخل الناتج النهائي هنا..." autocomplete="off">
+                        <button id="submit-solve-btn" class="btn btn-primary" style="width: auto;">تحقق من الحل ✔️</button>
+                    </div>
+                    <div class="solve-unit-hint">📝 أدخل الناتج الرقمي النهائي فقط، وسيظهر لك الشرح التوضيحي الكامل لخطوات الحل بعد الإجابة.</div>
+                </div>
+
+                <!-- صندوق الشرح التوضيحي لخطوات الحل -->
+                <div id="solution-box" class="solution-box">
+                    <div id="sol-status" class="sol-status"></div>
+                    <div class="sol-steps-card">
+                        <div class="sol-steps-header">💡 شرح خطوات الحل والقانون المستخدم:</div>
+                        <div id="sol-formula" class="sol-formula"></div>
+                        <div id="sol-ar-desc" class="sol-ar-desc"></div>
+                    </div>
+                </div>
+
+                <div class="next-row">
+                    <button id="next-btn" class="btn btn-primary" style="width: auto; display: none;">السؤال التالي ⬅</button>
+                </div>
+            </section>
+
+            <!-- 3. شاشة النتيجة النهائية (شهادة الإنجاز الأكاديمية) -->
+            <section id="result-screen" class="screen">
+                <div class="certificate-card">
+                    <div class="cert-ribbon">🎓 شهادة إتمام الاختبار التفاعلي</div>
+                    <h2 class="cert-title">مبادئ الإحصاء — المحاضرة الثانية</h2>
+                    <div class="cert-uni-sub">جامعة البصرة للنفط والغاز • كلية الإدارة الصناعية للنفط والغاز • قسم المحاسبة النفطية</div>
+
+                    <div id="sc-student-meta" class="sc-meta">👤 الطالب: ... • الشعبة: ...</div>
+
+                    <div class="score-circle">
+                        <span id="sc-pct" class="big-pct">0%</span>
+                        <span class="sub-lbl">نسبة الدقة</span>
+                    </div>
+
+                    <div>
+                        <span id="sc-grade" class="grade-tag">التقدير: امتياز 🏆</span>
+                    </div>
+
+                    <div class="sc-stats-grid">
+                        <div class="sc-stat">
+                            <span id="sc-score-out" class="v">0 / 15</span>
+                            <span class="l">الدرجة النهائية</span>
+                        </div>
+                        <div class="sc-stat">
+                            <span id="sc-points" class="v">0</span>
+                            <span class="l">مجموع النقاط</span>
+                        </div>
+                        <div class="sc-stat">
+                            <span id="sc-streak" class="v">0</span>
+                            <span class="l">أعلى سلسلة 🔥</span>
+                        </div>
+                    </div>
+
+                    <div class="breakdown-grid">
+                        <div class="bd-item">
+                            <span id="bd-mcq" class="bd-val">0 / 7</span>
+                            <span class="bd-lbl">الاختيارات (MCQ)</span>
+                        </div>
+                        <div class="bd-item solve-bd">
+                            <span id="bd-solve" class="bd-val">0 / 3</span>
+                            <span class="bd-lbl">المسائل الحسابية</span>
+                        </div>
+                        <div class="bd-item tf-bd">
+                            <span id="bd-tf" class="bd-val">0 / 5</span>
+                            <span class="bd-lbl">الصح والخطأ (T/F)</span>
+                        </div>
+                    </div>
+
+                    <div class="cert-signature-bar">
+                        <span>👨‍🏫 أستاذ المادة: م.م إسماعيل محمد الهلالي</span>
+                        <span class="cert-seal">✔️   شكرا لمشاركتكم مع التوفيق والتميز</span>
+                    </div>
+
+                    <div class="sc-actions">
+                        <button id="copy-btn" class="btn btn-gold">نسخ النتيجة للمشاركة 📋</button>
+                        <button id="restart-btn" class="btn btn-outline">إعادة الاختبار 🔄</button>
+                    </div>
+
+                    <div id="copy-msg" class="copy-msg">✅ تم نسخ شهادة النتيجة بنجاح! يمكنك لصقها وإرسالها الآن.</div>
+                </div>
+
+                <div class="review-accordion">
+                    <button id="toggle-review" class="review-toggle-bar" type="button">
+                        <span>📋 مراجعة جميع الأسئلة وخطوات الحل (15 سؤالاً)</span>
+                        <span id="rev-arrow">◀</span>
+                    </button>
+                    <div id="review-list" class="review-list"></div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ======================================================================
+             العمود الجانبي: الآلة الحاسبة العلمية الثابتة للطالب
+             ====================================================================== -->
+        <aside id="calc-sidebar" class="calc-sidebar" aria-label="الآلة الحاسبة العلمية">
+            <div class="calc-sidebar-header">
+                <h3>🧮 الآلة الحاسبة العلمية</h3>
+                <button id="calc-close-mobile" class="calc-close-mobile" type="button" title="إغلاق">✕</button>
+            </div>
+            <div class="calc-body">
+                <div id="calc-history" class="calc-history"></div>
+                <input type="text" id="calc-display" class="calc-display" value="0" readonly>
+
+                <div class="calc-keys-grid">
+                    <!-- الصف الأول: دوال إحصائية مساعدة -->
+                    <button type="button" class="c-key sci" data-k="fact" title="مضروب العدد n!">n!</button>
+                    <button type="button" class="c-key sci" data-k="sqrt" title="الجذر التربيعي">√</button>
+                    <button type="button" class="c-key sci" data-k="log" title="اللوغاريتم العشري log10">log</button>
+                    <button type="button" class="c-key clr" data-k="C">C</button>
+
+                    <!-- الصف الثاني: الأقواس والقسمة -->
+                    <button type="button" class="c-key op" data-k="(">(</button>
+                    <button type="button" class="c-key op" data-k=")">)</button>
+                    <button type="button" class="c-key op" data-k="back">⌫</button>
+                    <button type="button" class="c-key op" data-k="/">÷</button>
+
+                    <!-- الأرقام والعمليات -->
+                    <button type="button" class="c-key" data-k="7">7</button>
+                    <button type="button" class="c-key" data-k="8">8</button>
+                    <button type="button" class="c-key" data-k="9">9</button>
+                    <button type="button" class="c-key op" data-k="*">×</button>
+
+                    <button type="button" class="c-key" data-k="4">4</button>
+                    <button type="button" class="c-key" data-k="5">5</button>
+                    <button type="button" class="c-key" data-k="6">6</button>
+                    <button type="button" class="c-key op" data-k="-">−</button>
+
+                    <button type="button" class="c-key" data-k="1">1</button>
+                    <button type="button" class="c-key" data-k="2">2</button>
+                    <button type="button" class="c-key" data-k="3">3</button>
+                    <button type="button" class="c-key op" data-k="+">+</button>
+
+                    <button type="button" class="c-key" data-k="0" style="grid-column: span 2;">0</button>
+                    <button type="button" class="c-key" data-k=".">.</button>
+                    <button type="button" class="c-key eq" data-k="=">=</button>
+                </div>
+
+                <div class="calc-hint">
+                    💡 <strong>تلميح سريع:</strong> لحساب مضروب العدد (مثل <span class="en">5!</span>)، اكتب الرقم ثم اضغط زر <span class="en"><strong>n!</strong></span> مباشرة.
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <script>
+        /* ==========================================================================
+           1. المؤثرات الصوتية اللطيفة (Web Audio API)
+           ========================================================================== */
+        class SoundFX {
+            constructor() {
+                this.ctx = null;
+                this.muted = false;
+            }
+            init() {
+                if (!this.ctx) {
+                    const AC = window.AudioContext || window.webkitAudioContext;
+                    if (AC) this.ctx = new AC();
+                }
+                if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
+            }
+            beep(freq, type = 'sine', dur = 0.14, delay = 0, vol = 0.1) {
+                if (this.muted) return;
+                this.init();
+                if (!this.ctx) return;
+                const t = this.ctx.currentTime + delay;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                osc.type = type;
+                osc.frequency.setValueAtTime(freq, t);
+                gain.gain.setValueAtTime(0.001, t);
+                gain.gain.exponentialRampToValueAtTime(vol, t + 0.015);
+                gain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start(t);
+                osc.stop(t + dur + 0.02);
+            }
+            correct() {
+                this.beep(523.25, 'sine', 0.12, 0, 0.11);
+                this.beep(659.25, 'sine', 0.16, 0.08, 0.12);
+            }
+            wrong() {
+                this.beep(311.13, 'sine', 0.16, 0, 0.09);
+                this.beep(261.63, 'sine', 0.2, 0.1, 0.09);
+            }
+            finish() {
+                [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => this.beep(f, 'triangle', 0.2, i * 0.1, 0.11));
+            }
+        }
+        const sfx = new SoundFX();
+
+        /* ==========================================================================
+           2. بنك الأسئلة (15 سؤالاً مقسمة إلى 3 أقسام حسب الطلب):
+              - القسم الأول (1–7): 7 أسئلة اختيار من متعدد مع وقت (35 ثانية)
+              - القسم الثاني (8–10): 3 مسائل حل حسابية بدون وقت (وقت مفتوح)
+              - القسم الثالث (11–15): 5 أسئلة صح أو خطأ مع وقت (25 ثانية)
+           ========================================================================== */
+        const questions = [
+            // --- القسم الأول: 7 أسئلة اختيار من متعدد (مع وقت 35 ثانية) ---
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "Which type of sample has its units chosen randomly from a homogeneous community without researcher intervention?",
+                ar: "أي نوع من العينات يتم اختيار مفرداته عشوائياً من مجتمع متجانس دون تدخل الباحث؟",
+                options: [
+                    "Simple random sample",
+                    "Stratified random sample",
+                    "Non-probability sample",
+                    "Compound table sample"
+                ],
+                correct: 0,
+                formula: "Simple Random Sample → Homogeneous Community (مجتمع متجانس)",
+                explanation: "العينة العشوائية البسيطة (Simple Random Sample) تُسحب مفرداتها عشوائياً من مجتمع متجانس لا تختلف مفرداته في الصفة المدروسة دون تدخل الباحث."
+            },
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "Which sampling method divides a heterogeneous population into smaller, more homogeneous subgroups called 'classes' or 'strata'?",
+                ar: "أي أسلوب معاينة يقسّم المجتمع غير المتجانس إلى مجموعات فرعية أصغر وأكثر تجانساً تُسمى طبقات أو فئات؟",
+                options: [
+                    "Stratified random sample",
+                    "Simple random sample",
+                    "Comprehensive restriction",
+                    "Unclassified sampling"
+                ],
+                correct: 0,
+                formula: "Stratified Random Sample → Divide into Homogeneous Subgroups (طبقات)",
+                explanation: "في العينة الطبقية العشوائية (Stratified Random Sample)، يُقسّم المجتمع الأصلي إلى طبقات متجانسة حسب خصائص مثل العمر أو الجنس أو القسم، ثم نختار عشوائياً من كل طبقة."
+            },
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "In a frequency distribution table, how is the Range (R) calculated?",
+                ar: "في جدول التوزيع التكراري، كيف يُحسب المدى الكلي (Range - R)؟",
+                options: [
+                    "(Largest value - Smallest value) + 1",
+                    "Largest value + Smallest value",
+                    "(Lower limit + Upper limit) / 2",
+                    "Range / Number of classes"
+                ],
+                correct: 0,
+                formula: "Range (R) = (Largest − Smallest) + 1",
+                explanation: "بحسب خطوات إنشاء جدول التوزيع التكراري في المحاضرة الثانية: المدى (R) يساوي الفرق بين أكبر قيمة وأصغر قيمة مضافاً إليه واحد."
+            },
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "What are the lower and upper real limits for the discrete class interval (54 – 62)?",
+                ar: "ما هما الحدان الحقيقيان الأدنى والأعلى للفئة المنفصلة (54 – 62)؟",
+                options: [
+                    "53.5 – 62.5",
+                    "54.5 – 61.5",
+                    "53.0 – 63.0",
+                    "53.5 – 61.5"
+                ],
+                correct: 0,
+                formula: "Lower Real = 54 − 0.5 = 53.5  |  Upper Real = 62 + 0.5 = 62.5",
+                explanation: "نطرح 0.5 من الحد الأدنى (54 - 0.5 = 53.5) ونضيف 0.5 إلى الحد الأعلى (62 + 0.5 = 62.5) للحصول على الحدود الحقيقية للفئة."
+            },
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "Which statistical table displays two or more characteristics or phenomena at the same time (such as weight and height)?",
+                ar: "أي نوع من الجداول الإحصائية يعرض صفتين أو أكثر أو ظاهرتين في نفس الوقت (مثل الوزن والطول معاً)؟",
+                options: [
+                    "Compound Table",
+                    "Simple Table",
+                    "Unclassified Table",
+                    "Single-column Table"
+                ],
+                correct: 0,
+                formula: "Compound Table (الجدول المركب) → Two or more characteristics",
+                explanation: "الجدول المركب (Compound Table) يعرض صفتين أو أكثر في آنٍ واحد، بينما الجدول البسيط (Simple Table) يعرض صفة واحدة فقط."
+            },
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "In a frequency distribution, what does the symbol (Fi) represent?",
+                ar: "في التوزيع التكراري، ماذا يمثل الرمز (Fi)؟",
+                options: [
+                    "Class frequency",
+                    "Class length",
+                    "Class center",
+                    "Total range"
+                ],
+                correct: 0,
+                formula: "Fi = Class Frequency (تكرار الفئة)",
+                explanation: "الرمز (Fi) يمثل تكرار الفئة (Class Frequency)، وهو عدد المفردات أو القيم التي تقع ضمن نطاق تلك الفئة."
+            },
+            {
+                part: 1,
+                type: "mcq",
+                timeLimit: 35,
+                en: "What is the class center (midpoint) for the class interval (63 – 71)?",
+                ar: "ما هو مركز الفئة (Class Center) للفئة (63 – 71)؟",
+                options: [
+                    "67",
+                    "66",
+                    "68",
+                    "65"
+                ],
+                correct: 0,
+                formula: "Class Center = (L.L + U.L) / 2 = (63 + 71) / 2 = 134 / 2 = 67",
+                explanation: "مركز الفئة يساوي مجموع الحد الأدنى والحد الأعلى مقسوماً على 2: (63 + 71) ÷ 2 = 134 ÷ 2 = 67."
+            },
+
+            // --- القسم الثاني: 3 مسائل حل حسابية (بدون مؤقت زمني وبدون أي تلميح بالقوانين) ---
+            {
+                part: 2,
+                type: "solve",
+                timeLimit: 0,
+                en: "A homogeneous population has 5 elements, and a sample of size 3 is to be chosen. Calculate the total number of possible simple random samples (R).",
+                ar: "مجتمع إحصائي متجانس حجمه N = 5 مفردات ويراد اختيار عينة عشوائية بسيطة بحجم n = 3 مفردات. احسب عدد العينات الممكنة (R).",
+                acceptedValues: [10],
+                displayAnswer: "10",
+                formula: "R = C(5, 3) = 5! / [3! × (5 - 3)!] = 120 / (6 × 2) = 10",
+                explanation: "نستخدم قانون التوافيق: R = N! ÷ [n! × (N - n)!] = 5! ÷ (3! × 2!) = 120 ÷ (6 × 2) = 120 ÷ 12 = 10 عينات ممكنة."
+            },
+            {
+                part: 2,
+                type: "solve",
+                timeLimit: 0,
+                en: "A community is divided into 5 strata with sizes (600, 400, 300, 200, 100). If a stratified sample of size n = 110 is drawn, calculate the sample size of the first stratum (n1).",
+                ar: "مجتمع مقسم إلى 5 طبقات أحجامها (600, 400, 300, 200, 100)، وسُحبت عينة طبقية بحجم n = 110. احسب حجم العينة المسحوبة من الطبقة الأولى (n1).",
+                acceptedValues: [41.25],
+                displayAnswer: "41.25",
+                formula: "N = 600 + 400 + 300 + 200 + 100 = 1600  →  n1 = n × (N1 / N) = 110 × (600 / 1600) = 41.25",
+                explanation: "1) نجمع أحجام الطبقات الخمس لإيجاد حجم المجتمع الكلي: N = 1600. 2) نطبق قانون العينة الطبقية: n1 = 110 × (600 ÷ 1600) = 41.25."
+            },
+            {
+                part: 2,
+                type: "solve",
+                timeLimit: 0,
+                en: "For the Basra palm trees data where the smallest value is 45, the largest value is 89, and the number of classes is m = 5, calculate the class length (L).",
+                ar: "لبيانات أشجار النخيل في البصرة حيث أصغر قيمة = 45، وأكبر قيمة = 89، وعدد الفئات m = 5، احسب طول الفئة (L).",
+                acceptedValues: [9],
+                displayAnswer: "9",
+                formula: "R = (89 − 45) + 1 = 45  →  L = R / m = 45 / 5 = 9",
+                explanation: "1) نحسب المدى الكلي: R = (أكبر قيمة - أصغر قيمة) + 1 = (89 - 45) + 1 = 45. 2) نقسم المدى على عدد الفئات: L = 45 ÷ 5 = 9."
+            },
+
+            // --- القسم الثالث: 5 أسئلة صح أو خطأ (مع وقت 25 ثانية) ---
+            {
+                part: 3,
+                type: "tf",
+                timeLimit: 25,
+                en: "For a population of 3 elements (a, b, c) and a sample size of 2, the probability that any single sample emerges is 1/3.",
+                ar: "لمجتمع مكون من 3 مفردات (a, b, c) وحجم عينة 2، فإن احتمال ظهور أي عينة يساوي 1/3.",
+                options: ["TRUE", "FALSE"],
+                correct: 0,
+                formula: "R = C(3, 2) = 3  →  Probability = 1 / R = 1 / 3",
+                explanation: "العبارة صحيحة (TRUE)؛ لأن عدد العينات الممكنة R = 3، وبالتالي احتمال ظهور أي عينة هو 1/3."
+            },
+            {
+                part: 3,
+                type: "tf",
+                timeLimit: 25,
+                en: "The class center (midpoint) for the class interval (45 – 53) is equal to 49.",
+                ar: "مركز الفئة (Class Center) للفئة (45 – 53) يساوي 49.",
+                options: ["TRUE", "FALSE"],
+                correct: 0,
+                formula: "Class Center = (45 + 53) / 2 = 98 / 2 = 49",
+                explanation: "العبارة صحيحة (TRUE)؛ لأن مركز الفئة يساوي (الحد الأدنى + الحد الأعلى) ÷ 2 = (45 + 53) ÷ 2 = 49."
+            },
+            {
+                part: 3,
+                type: "tf",
+                timeLimit: 25,
+                en: "If the calculated class length (L) is a fraction (decimal), it should be rounded to an integer.",
+                ar: "إذا كان ناتج حساب طول الفئة (L) عدداً كسرياً (عشرياً)، فإنه يُقرّب إلى عدد صحيح.",
+                options: ["TRUE", "FALSE"],
+                correct: 0,
+                formula: "Note: If class length (L) is a fraction → round it to an integer",
+                explanation: "العبارة صحيحة (TRUE)؛ بحسب الملاحظة الواردة في المحاضرة، يُقرّب طول الفئة الكسري إلى أقرب عدد صحيح."
+            },
+            {
+                part: 3,
+                type: "tf",
+                timeLimit: 25,
+                en: "Unclassified data are data that have already been organized and placed into frequency distribution tables.",
+                ar: "البيانات غير المبوبة (غير المصنفة) هي البيانات التي سبق ترتيبها وتنظيمها في جداول توزيع تكراري.",
+                options: ["TRUE", "FALSE"],
+                correct: 1,
+                formula: "Unclassified = Raw data  |  Classified = Organized in frequency tables",
+                explanation: "العبارة خاطئة (FALSE)؛ البيانات غير المبوبة هي البيانات الخام التي لم تُرتب أو تُوضع في جداول إحصائية بعد."
+            },
+            {
+                part: 3,
+                type: "tf",
+                timeLimit: 25,
+                en: "For a discrete variable, the upper limit of a class is calculated by adding the class length (L) to the lower limit and subtracting 1.",
+                ar: "في حالة المتغير المنفصل، يُحسب الحد الأعلى للفئة بجمع الحد الأدنى مع طول الفئة (L) وطرح 1.",
+                options: ["TRUE", "FALSE"],
+                correct: 0,
+                formula: "Discrete Variable: Upper Limit = Lower Limit + L − 1",
+                explanation: "العبارة صحيحة (TRUE)؛ ففي مثال أشجار النخيل: 45 + 9 - 1 = 53 فتصبح الفئة الأولى (45 – 53)."
+            }
+        ];
+
+        /* ==========================================================================
+           3. منطق التطبيق وإدارة الحالة والآلة الحاسبة العلمية الجانبية
+           ========================================================================== */
+        let studentName = "";
+        let studentStudy = "";
+        let studentSection = "";
+        let currentIdx = 0;
+        let correctCount = 0;
+        let points = 0;
+        let streak = 0;
+        let maxStreak = 0;
+        let timer = null;
+        let timeLeft = 35;
+        let maxTimeForQ = 35;
+        let locked = false;
+        let log = [];
+
+        const RING_LEN = 125.6;
+
+        // عناصر الواجهة
+        const startScreen = document.getElementById("start-screen");
+        const quizScreen = document.getElementById("quiz-screen");
+        const resultScreen = document.getElementById("result-screen");
+
+        const soundBtn = document.getElementById("sound-btn");
+        const nameInput = document.getElementById("student-name");
+        const studyBtns = document.querySelectorAll(".study-btn");
+        const secBtns = document.querySelectorAll(".section-btn");
+        const formError = document.getElementById("form-error");
+        const startBtn = document.getElementById("start-btn");
+
+        const hudStudentInfo = document.getElementById("hud-student-info");
+        const hudScore = document.getElementById("hud-score");
+        const hudStreak = document.getElementById("hud-streak");
+        const floatScore = document.getElementById("float-score");
+        const ringFill = document.getElementById("ring-fill");
+        const timerNum = document.getElementById("timer-num");
+
+        const progressTrack = document.getElementById("progress-track");
+        const partBadge = document.getElementById("part-badge");
+        const qCounter = document.getElementById("q-counter");
+        const qEn = document.getElementById("q-en");
+        const qAr = document.getElementById("q-ar");
+
+        const optionsGrid = document.getElementById("options-grid");
+        const solveWorkspace = document.getElementById("solve-workspace");
+        const solveScratch = document.getElementById("solve-scratch");
+        const finalNumInput = document.getElementById("final-num-input");
+        const submitSolveBtn = document.getElementById("submit-solve-btn");
+        const solveUnitHint = document.getElementById("solve-unit-hint");
+
+        const solutionBox = document.getElementById("solution-box");
+        const solStatus = document.getElementById("sol-status");
+        const solFormula = document.getElementById("sol-formula");
+        const solArDesc = document.getElementById("sol-ar-desc");
+        const nextBtn = document.getElementById("next-btn");
+
+        const copyBtn = document.getElementById("copy-btn");
+        const restartBtn = document.getElementById("restart-btn");
+        const copyMsg = document.getElementById("copy-msg");
+        const toggleReview = document.getElementById("toggle-review");
+        const reviewList = document.getElementById("review-list");
+        const revArrow = document.getElementById("rev-arrow");
+
+        // عناصر الآلة الحاسبة الجانبية
+        const calcSidebar = document.getElementById("calc-sidebar");
+        const fabCalcBtn = document.getElementById("fab-calc-btn");
+        const calcCloseMobile = document.getElementById("calc-close-mobile");
+        const calcDisplay = document.getElementById("calc-display");
+        const calcHistory = document.getElementById("calc-history");
+        let calcExpr = "";
+
+        fabCalcBtn.addEventListener("click", () => {
+            calcSidebar.classList.toggle("mobile-open");
+        });
+
+        calcCloseMobile.addEventListener("click", () => {
+            calcSidebar.classList.remove("mobile-open");
+        });
+
+        function factorial(n) {
+            if (n < 0 || !Number.isInteger(n) || n > 170) return NaN;
+            if (n === 0 || n === 1) return 1;
+            let res = 1;
+            for (let i = 2; i <= n; i++) res *= i;
+            return res;
+        }
+
+        function evalSafe(expr) {
+            if (!/^[0-9+\-*/.() ]+$/.test(expr) || expr.trim() === "") return NaN;
+            return Function('"use strict";return (' + expr + ')')();
+        }
+
+        document.querySelectorAll(".c-key").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const k = btn.dataset.k;
+                if (k === "C") {
+                    calcExpr = "";
+                    calcHistory.textContent = "";
+                    calcDisplay.value = "0";
+                } else if (k === "back") {
+                    calcExpr = calcExpr.slice(0, -1);
+                    calcDisplay.value = calcExpr || "0";
+                } else if (k === "fact") {
+                    const currentVal = evalSafe(calcExpr || calcDisplay.value);
+                    const f = factorial(currentVal);
+                    if (isNaN(f)) {
+                        calcHistory.textContent = "خطأ: أدخل عدداً صحيحاً موجباً";
+                    } else {
+                        calcHistory.textContent = `${currentVal}! =`;
+                        calcExpr = String(f);
+                        calcDisplay.value = calcExpr;
+                    }
+                } else if (k === "sqrt") {
+                    const currentVal = evalSafe(calcExpr || calcDisplay.value);
+                    if (isNaN(currentVal) || currentVal < 0) {
+                        calcHistory.textContent = "خطأ رياضي";
+                    } else {
+                        const res = Number(Math.sqrt(currentVal).toFixed(4));
+                        calcHistory.textContent = `√(${currentVal}) =`;
+                        calcExpr = String(res);
+                        calcDisplay.value = calcExpr;
+                    }
+                } else if (k === "log") {
+                    const currentVal = evalSafe(calcExpr || calcDisplay.value);
+                    if (isNaN(currentVal) || currentVal <= 0) {
+                        calcHistory.textContent = "خطأ رياضي";
+                    } else {
+                        const res = Number(Math.log10(currentVal).toFixed(4));
+                        calcHistory.textContent = `log(${currentVal}) =`;
+                        calcExpr = String(res);
+                        calcDisplay.value = calcExpr;
+                    }
+                } else if (k === "=") {
+                    try {
+                        const ans = evalSafe(calcExpr);
+                        if (!isNaN(ans) && Number.isFinite(ans)) {
+                            calcHistory.textContent = `${calcExpr} =`;
+                            calcExpr = String(Number(ans.toFixed(4)));
+                            calcDisplay.value = calcExpr;
+                        } else {
+                            calcDisplay.value = "Error";
+                            calcExpr = "";
+                        }
+                    } catch {
+                        calcDisplay.value = "Error";
+                        calcExpr = "";
+                    }
+                } else {
+                    calcExpr += k;
+                    calcDisplay.value = calcExpr;
+                }
+            });
+        });
+
+        // اختيار نوع الدراسة (صباحي / مسائي)
+        studyBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                studyBtns.forEach(b => b.classList.remove("selected"));
+                btn.classList.add("selected");
+                studentStudy = btn.dataset.study;
+            });
+        });
+
+        // اختيار الشعبة (أ / ب)
+        secBtns.forEach(btn => {
+            btn.addEventListener("click", () => {
+                secBtns.forEach(b => b.classList.remove("selected"));
+                btn.classList.add("selected");
+                studentSection = btn.dataset.sec;
+            });
+        });
+
+        soundBtn.addEventListener("click", () => {
+            sfx.muted = !sfx.muted;
+            soundBtn.textContent = sfx.muted ? "🔇" : "🔊";
+        });
+
+        startBtn.addEventListener("click", beginQuiz);
+        nameInput.addEventListener("keypress", e => { if (e.key === "Enter") beginQuiz(); });
+
+        submitSolveBtn.addEventListener("click", handleSolveSubmit);
+        finalNumInput.addEventListener("keypress", e => { if (e.key === "Enter") handleSolveSubmit(); });
+
+        nextBtn.addEventListener("click", goNext);
+        copyBtn.addEventListener("click", copyResult);
+        restartBtn.addEventListener("click", () => {
+            stopConfetti();
+            switchScreen(startScreen);
+        });
+
+        toggleReview.addEventListener("click", () => {
+            const open = reviewList.style.display === "flex";
+            reviewList.style.display = open ? "none" : "flex";
+            revArrow.textContent = open ? "◀" : "▼";
+        });
+
+        function switchScreen(el) {
+            [startScreen, quizScreen, resultScreen].forEach(s => s.classList.remove("active"));
+            el.classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        function beginQuiz() {
+            studentName = nameInput.value.trim();
+            if (!studentName || !studentStudy || !studentSection) {
+                formError.style.display = "block";
+                if (!studentName) nameInput.focus();
+                return;
+            }
+            formError.style.display = "none";
+
+            currentIdx = 0;
+            correctCount = 0;
+            points = 0;
+            streak = 0;
+            maxStreak = 0;
+            log = [];
+
+            hudStudentInfo.textContent = `👤 ${studentName} • ${studentStudy} (${studentSection})`;
+            hudScore.textContent = "0";
+            updateStreak();
+            buildProgress();
+
+            sfx.init();
+            switchScreen(quizScreen);
+            loadQuestion();
+        }
+
+        function buildProgress() {
+            progressTrack.innerHTML = "";
+            for (let i = 0; i < questions.length; i++) {
+                const seg = document.createElement("div");
+                seg.className = "p-seg";
+                seg.id = `seg-${i}`;
+                progressTrack.appendChild(seg);
+            }
+        }
+
+        function shuffleOptions(q) {
+            if (q.type !== "mcq") return { opts: q.options || [], correctIdx: q.correct };
+            const indexed = q.options.map((text, idx) => ({ text, isCorrect: idx === q.correct }));
+            for (let i = indexed.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [indexed[i], indexed[j]] = [indexed[j], indexed[i]];
+            }
+            return {
+                opts: indexed.map(item => item.text),
+                correctIdx: indexed.findIndex(item => item.isCorrect)
+            };
+        }
+
+        let currentCorrectIndex = 0;
+        let currentDisplayedOptions = [];
+
+        function loadQuestion() {
+            locked = false;
+            clearInterval(timer);
+
+            const q = questions[currentIdx];
+            const total = questions.length;
+
+            // تحديث شريط التقدم
+            for (let i = 0; i < total; i++) {
+                const s = document.getElementById(`seg-${i}`);
+                if (s) s.classList.toggle("active", i === currentIdx);
+            }
+
+            // ضبط الشارة والوقت حسب القسم
+            if (q.part === 1) {
+                partBadge.className = "part-badge en";
+                partBadge.textContent = "Part 1: Multiple Choice (1–7 • Timed 35s)";
+            } else if (q.part === 2) {
+                partBadge.className = "part-badge solve-mode en";
+                partBadge.textContent = "Part 2: Problem Solving (8–10 • No Time Limit ♾️)";
+            } else {
+                partBadge.className = "part-badge tf-mode en";
+                partBadge.textContent = "Part 3: True or False (11–15 • Timed 25s)";
+            }
+            qCounter.textContent = `السؤال ${currentIdx + 1} من ${total}`;
+
+            qEn.textContent = `Q${currentIdx + 1}. ${q.en}`;
+            qAr.textContent = q.ar;
+
+            solutionBox.style.display = "none";
+            solutionBox.className = "solution-box";
+            nextBtn.style.display = "none";
+
+            // عرض منطقة الإجابة المناسبة لنوع السؤال
+            if (q.type === "solve") {
+                optionsGrid.style.display = "none";
+                solveWorkspace.style.display = "block";
+                solveScratch.value = "";
+                finalNumInput.value = "";
+                finalNumInput.disabled = false;
+                submitSolveBtn.disabled = false;
+                setTimeout(() => finalNumInput.focus(), 100);
+            } else {
+                solveWorkspace.style.display = "none";
+                optionsGrid.style.display = q.type === "tf" ? "grid" : "flex";
+
+                const shuffled = shuffleOptions(q);
+                currentDisplayedOptions = shuffled.opts;
+                currentCorrectIndex = shuffled.correctIdx;
+
+                optionsGrid.innerHTML = "";
+                if (q.type === "tf") {
+                    optionsGrid.className = "options-grid tf-grid";
+                    currentDisplayedOptions.forEach((opt, idx) => {
+                        const btn = document.createElement("button");
+                        const isTrue = idx === 0;
+                        btn.className = `choice-btn tf-btn ${isTrue ? "tf-true" : "tf-false"}`;
+                        btn.textContent = isTrue ? "TRUE ✔" : "FALSE ✘";
+                        btn.addEventListener("click", () => handleChoiceSelect(idx, false));
+                        optionsGrid.appendChild(btn);
+                    });
+                } else {
+                    optionsGrid.className = "options-grid";
+                    const letters = ["A", "B", "C", "D"];
+                    currentDisplayedOptions.forEach((opt, idx) => {
+                        const btn = document.createElement("button");
+                        btn.className = "choice-btn";
+                        btn.innerHTML = `<span class="choice-key">${letters[idx]}</span><span>${opt}</span>`;
+                        btn.addEventListener("click", () => handleChoiceSelect(idx, false));
+                        optionsGrid.appendChild(btn);
+                    });
+                }
+            }
+
+            // إدارة المؤقت (مؤقت للقسم الأول والثالث، ومفتوح للقسم الثاني)
+            if (q.timeLimit > 0) {
+                timeLeft = q.timeLimit;
+                maxTimeForQ = q.timeLimit;
+                updateRing(false);
+                timer = setInterval(() => {
+                    timeLeft--;
+                    updateRing(false);
+                    if (timeLeft <= 0) {
+                        clearInterval(timer);
+                        handleChoiceSelect(-1, true);
+                    }
+                }, 1000);
+            } else {
+                updateRing(true);
+            }
+        }
+
+        function updateRing(isUnlimited) {
+            ringFill.classList.remove("warn", "danger", "unlimited");
+            timerNum.classList.remove("danger", "unlimited");
+
+            if (isUnlimited) {
+                timerNum.textContent = "∞";
+                timerNum.classList.add("unlimited");
+                ringFill.classList.add("unlimited");
+                ringFill.style.strokeDashoffset = 0;
+                return;
+            }
+
+            timerNum.textContent = timeLeft;
+            const offset = RING_LEN * (1 - Math.max(0, timeLeft) / maxTimeForQ);
+            ringFill.style.strokeDashoffset = offset;
+
+            if (timeLeft <= 6) {
+                ringFill.classList.add("danger");
+                timerNum.classList.add("danger");
+            } else if (timeLeft <= 12) {
+                ringFill.classList.add("warn");
+            }
+        }
+
+        function updateStreak() {
+            hudStreak.textContent = `🔥 ${streak}`;
+            hudStreak.classList.toggle("hot", streak >= 3);
+        }
+
+        function popPoints(val) {
+            floatScore.textContent = `+${val}`;
+            floatScore.classList.remove("pop");
+            void floatScore.offsetWidth;
+            floatScore.classList.add("pop");
+        }
+
+        // معالجة إجابة الاختيار من متعدد والصح والخطأ
+        function handleChoiceSelect(chosenIdx, timeout) {
+            if (locked) return;
+            locked = true;
+            clearInterval(timer);
+
+            const q = questions[currentIdx];
+            const isOk = !timeout && (chosenIdx === currentCorrectIndex);
+            const seg = document.getElementById(`seg-${currentIdx}`);
+            const btns = optionsGrid.querySelectorAll(".choice-btn");
+
+            btns.forEach((b, i) => {
+                b.disabled = true;
+                if (i === currentCorrectIndex) b.classList.add("correct");
+                else if (i === chosenIdx && !isOk) b.classList.add("wrong");
+            });
+
+            finalizeQuestionResult(
+                isOk,
+                timeout ? "Time Expired" : currentDisplayedOptions[chosenIdx],
+                currentDisplayedOptions[currentCorrectIndex],
+                timeout
+            );
+        }
+
+        // تحويل الأرقام العربية إلى إنكليزية وتقييم الإجابة الرقمية للمسائل
+        function normalizeDigits(str) {
+            const arNums = "٠١٢٣٤٥٦٧٨٩";
+            return str.replace(/[٠-٩]/g, d => arNums.indexOf(d)).trim();
+        }
+
+        function handleSolveSubmit() {
+            if (locked) return;
+            const raw = normalizeDigits(finalNumInput.value);
+            if (!raw) {
+                finalNumInput.focus();
+                return;
+            }
+
+            locked = true;
+            finalNumInput.disabled = true;
+            submitSolveBtn.disabled = true;
+
+            const q = questions[currentIdx];
+            let parsed = NaN;
+
+            // دعم الكسور مثل 1/3 أو الأرقام العشرية والصحيحة
+            if (/^-?\d+(\.\d+)?\s*\/\s*-?\d+(\.\d+)?$/.test(raw)) {
+                const parts = raw.split("/");
+                parsed = parseFloat(parts[0]) / parseFloat(parts[1]);
+            } else {
+                parsed = parseFloat(raw.replace(/,/g, ""));
+            }
+
+            const isOk = !isNaN(parsed) && q.acceptedValues.some(val => Math.abs(parsed - val) <= 0.05);
+
+            finalizeQuestionResult(isOk, raw, q.displayAnswer, false);
+        }
+
+        function finalizeQuestionResult(isOk, userAnsText, correctAnsText, isTimeout) {
+            const q = questions[currentIdx];
+            const seg = document.getElementById(`seg-${currentIdx}`);
+
+            if (isOk) {
+                correctCount++;
+                streak++;
+                if (streak > maxStreak) maxStreak = streak;
+                const basePts = q.type === "solve" ? 150 : 100;
+                const gain = streak >= 3 ? Math.round(basePts * 1.2) : basePts;
+                points += gain;
+                hudScore.textContent = points;
+                updateStreak();
+                popPoints(gain);
+                sfx.correct();
+                if (seg) seg.classList.add("ok");
+
+                solutionBox.classList.add("ok");
+                solStatus.textContent = "✅ أحسنت! إجابة صحيحة";
+            } else {
+                streak = 0;
+                updateStreak();
+                sfx.wrong();
+                if (seg) seg.classList.add("bad");
+
+                solutionBox.classList.add("bad");
+                solStatus.textContent = isTimeout
+                    ? `⏰ انتهى الوقت! الإجابة الصحيحة هي: (${correctAnsText})`
+                    : `❌ إجابة غير صحيحة — الإجابة الصحيحة هي: (${correctAnsText})`;
+            }
+
+            solFormula.textContent = q.formula;
+            solArDesc.textContent = q.explanation;
+            solutionBox.style.display = "block";
+
+            log.push({
+                part: q.part,
+                en: q.en,
+                userAns: userAnsText,
+                correctAns: correctAnsText,
+                formula: q.formula,
+                explanation: q.explanation,
+                isOk
+            });
+
+            nextBtn.textContent = currentIdx < questions.length - 1
+                ? "السؤال التالي ⬅"
+                : "عرض النتيجة النهائية 🏆";
+            nextBtn.style.display = "inline-flex";
+        }
+
+        function goNext() {
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                loadQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        /* ==========================================================================
+           4. شاشة النتيجة النهائية ومراجعة الحلول
+           ========================================================================== */
+        function getGrade(pct) {
+            if (pct >= 90) return "امتياز 🏆";
+            if (pct >= 80) return "جيد جداً 🥇";
+            if (pct >= 70) return "جيد 🥈";
+            if (pct >= 50) return "مقبول 🎖️";
+            return "يحتاج مراجعة 📘";
+        }
+
+        function showResults() {
+            switchScreen(resultScreen);
+            copyMsg.style.display = "none";
+
+            const total = questions.length;
+            const pct = Math.round((correctCount / total) * 100);
+            const grade = getGrade(pct);
+
+            const mcqOk = log.filter(x => x.part === 1 && x.isOk).length;
+            const solveOk = log.filter(x => x.part === 2 && x.isOk).length;
+            const tfOk = log.filter(x => x.part === 3 && x.isOk).length;
+
+            document.getElementById("sc-student-meta").textContent = `👤 الطالب: ${studentName}  •  الدراسة: ${studentStudy}  •  ${studentSection}`;
+            document.getElementById("sc-pct").textContent = `${pct}%`;
+            document.getElementById("sc-grade").textContent = `التقدير: ${grade}`;
+            document.getElementById("sc-score-out").textContent = `${correctCount} / ${total}`;
+            document.getElementById("sc-points").textContent = points;
+            document.getElementById("sc-streak").textContent = maxStreak;
+
+            document.getElementById("bd-mcq").textContent = `${mcqOk} / 7`;
+            document.getElementById("bd-solve").textContent = `${solveOk} / 3`;
+            document.getElementById("bd-tf").textContent = `${tfOk} / 5`;
+
+            if (pct >= 50) {
+                sfx.finish();
+                startConfetti();
+            }
+
+            reviewList.innerHTML = "";
+            reviewList.style.display = "none";
+            revArrow.textContent = "◀";
+
+            log.forEach((item, idx) => {
+                const div = document.createElement("div");
+                div.className = `rev-row ${item.isOk ? "ok" : "bad"}`;
+                div.innerHTML = `
+                    <div class="rev-q">Q${idx + 1}. ${item.en}</div>
+                    <div class="rev-a" style="color: ${item.isOk ? "#065f46" : "#9f1239"};">
+                        ${item.isOk ? "✅" : "❌"} Your Answer: ${item.userAns}
+                    </div>
+                    ${!item.isOk ? `<div class="rev-a" style="color: #065f46;">✔ Correct Answer: ${item.correctAns}</div>` : ""}
+                    <div class="rev-sol">
+                        <div class="en" style="color: #1e40af; margin-bottom: 3px;">${item.formula}</div>
+                        <div>${item.explanation}</div>
+                    </div>
+                `;
+                reviewList.appendChild(div);
+            });
+        }
+
+        function copyResult() {
+            const total = questions.length;
+            const pct = Math.round((correctCount / total) * 100);
+            const grade = getGrade(pct);
+            const mcqOk = log.filter(x => x.part === 1 && x.isOk).length;
+            const solveOk = log.filter(x => x.part === 2 && x.isOk).length;
+            const tfOk = log.filter(x => x.part === 3 && x.isOk).length;
+
+            const text =
+`🎓 شهادة نتيجة الاختبار التفاعلي — المحاضرة الثانية (أنواع العينات والتوزيع التكراري)
+🏛 جامعة البصرة للنفط والغاز | قسم محاسبة النفط
+👨‍🏫 أستاذ المادة: م.م إسماعيل محمد الهلالي
+👤 اسم الطالب: ${studentName}
+📚 الدراسة: ${studentStudy} | 🏫 الشعبة: ${studentSection}
+📊 الدرجة النهائية: ${correctCount} من ${total} (${pct}%)
+📌 التفصيل: الاختيارات (${mcqOk}/7) | المسائل (${solveOk}/3) | الصح والخطأ (${tfOk}/5)
+⭐ التقدير: ${grade}`;
+
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+
+            copyMsg.style.display = "block";
+            setTimeout(() => { copyMsg.style.display = "none"; }, 4000);
+        }
+
+        /* ==========================================================================
+           5. مؤثرات الاحتفال (Confetti)
+           ========================================================================== */
+        const canvas = document.getElementById("confetti-canvas");
+        const ctx = canvas.getContext("2d");
+        let pieces = [];
+        let animId = null;
+
+        function startConfetti() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            pieces = [];
+            const colors = ["#1e40af", "#2563eb", "#f59e0b", "#10b981"];
+            for (let i = 0; i < 95; i++) {
+                pieces.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height - canvas.height,
+                    w: Math.random() * 8 + 4,
+                    h: Math.random() * 5 + 3,
+                    color: colors[i % colors.length],
+                    vy: Math.random() * 3 + 2,
+                    vx: (Math.random() - 0.5) * 2
+                });
+            }
+            loopConfetti();
+        }
+
+        function loopConfetti() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            let alive = 0;
+            pieces.forEach(p => {
+                p.y += p.vy;
+                p.x += p.vx;
+                if (p.y < canvas.height + 15) alive++;
+                ctx.fillStyle = p.color;
+                ctx.fillRect(p.x, p.y, p.w, p.h);
+            });
+            if (alive > 0) animId = requestAnimationFrame(loopConfetti);
+            else stopConfetti();
+        }
+
+        function stopConfetti() {
+            if (animId) cancelAnimationFrame(animId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    </script>
+</body>
+</html>
